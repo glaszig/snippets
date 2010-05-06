@@ -1,0 +1,4 @@
+= Instructions =
+in svnindex.xsl on line 16 configure your svn root path.
+if your svn is located at http://your.host.tld/projects/svn
+then replace '/svn' with '/projects/svn' and you should be ready to go.
