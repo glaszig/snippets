@@ -29,15 +29,14 @@
 			setTimeout(function() {
 				config.onBeforeLoad.call(imgElement);
 				// todo: update image src url
+				log('old src: '+imgElement.attr('src'));
 				var oldSrc = imgElement.attr('src').split('?');
 				var qs = oldSrc[1] || ''; //config.queryKey+'=now';
 				// clean up
-				qs = qs.replace(/&*$/, '').replace(
-					new RegExp('&?'+config.queryKey+'=[^&]*&?', 'ig'), ''
-				)+'&';
+				qs = qs.replace(new RegExp(config.queryKey+'=[^&]*&?', 'ig'), '')+'&';
 				// set src to initiate reload
 				imgElement.attr('src', oldSrc[0]+'?'+qs+config.queryKey+'='+config.queryValue());
-				log(imgElement.attr('src'));
+				log('new src: '+imgElement.attr('src'));
 				// repeating...
 				myself.call(myself, imgElement, period);
 			}, period);
