@@ -4,7 +4,7 @@
 	
 		config = $.extend({
 			debug: false,
-			//period: 3000,
+			period: 3000,
 			queryKey: '_jq-update',
 			queryValue: function() {
 				return new Date().getTime();
@@ -52,7 +52,7 @@
 			
 			// update periodical
 			if(config.period) {
-				periodicalUpdater(img, config.period);
+				periodicalUpdater(img, config.period*1000);
 			}
 			
 		});
