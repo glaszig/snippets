@@ -30,12 +30,13 @@
 define('INTERFACES', 'ng0 fxp1 ath0');
 define('COMMANDS', 's d m hs vs t h');
 define('USE_CACHE', true);
-define('CACHE_TIME', 1);
-//define('CACHE_DIR', '/tmp');
-
+define('CACHE_TIME', 5);
+#define('CACHE_DIR', '/tmp');
 
 
 ### LEAVE THE FOLLOWING UNTOUCHED
+
+
 // sanity checks
 if(!in_array($_GET['i'], explode(' ', INTERFACES)))
     die('invalid interface.');
@@ -49,10 +50,11 @@ $outfile = '-'; // stdout
 // check for cache dir
 if(constant('USE_CACHE')):
     defined('CACHE_DIR') or define('CACHE_DIR', '/tmp');
+    defined('CACHE_TIME') or define('CACHE_TIME', 5);
     if(!is_dir(CACHE_DIR)) die('cache directory doesn\'t exist.');
     if(!is_writable(CACHE_DIR)) die('can\'t write to cache directory.');
     // create a file name
-    $outfile = CACHE_DIR.'/vnstati-'.md5(serialize($_GET)).'.png';
+    $outfile = CACHE_DIR.'/vnstati-'.md5($_GET['i'].$_GET['c']).'.png';
 endif;
 
 // do the math
