@@ -2,6 +2,7 @@
  * plugin to dynamically add a clear handler to input fields
  * 
  * @author glaszig at gmail dot com
+ * @link github.com/glaszig/snippets
  */
 (function($) {
 	
