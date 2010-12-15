@@ -2,6 +2,7 @@
  * plugin to dynamically add a clear handler to input fields
  * 
  * @author glaszig at gmail dot com
+ * @link github.com/glaszig/snippets
  */
 (function($) {
 	
@@ -10,7 +11,8 @@
 		config = $.extend({
 			template: '<a href="#"></a>',
 			className: 'jq-clear',
-			onClick: function() {}
+			onClick: function() {},
+			clearKeyCode: null
 		}, config);
 		
 		// called in context of the clear button
@@ -22,13 +24,22 @@
 		 * adds a clear button after the input
 		 */
 		var addClearButton = function(id) {
-			$(config.template).attr('id', id).click((function(input) {
+			var btn = $(config.template).attr('id', id).click((function(input) {
 				return function() {
 					clearAndRemove.call(this, input);
 					return false;
 				}
 			})(this)).click(config.onClick).addClass(config.className)
 			.insertAfter(this);
+			
+			// add keyCode clear function
+			var input = this, code = config.clearKeyCode;
+			$(this).keyup(function(e) {
+				if(e.keyCode == code) {
+					clearAndRemove.call(btn, input);
+					return false;
+				}
+			});
 		}
 		
 		return this.each(function(index, item) {
@@ -52,3 +63,4 @@
 	}
 	
 })(jQuery);
+
