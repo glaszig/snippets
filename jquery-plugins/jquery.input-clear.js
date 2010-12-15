@@ -3,6 +3,7 @@
  * 
  * @author glaszig at gmail dot com
  * @link github.com/glaszig/snippets
+ * @license github.com/glaszig/snippets/LICENSE
  */
 (function($) {
 	
@@ -63,7 +64,4 @@
 	}
 	
 })(jQuery);
-<<<<<<< HEAD
 
-=======
->>>>>>> de6429c899346fd529382911270a4fef3472caa6
