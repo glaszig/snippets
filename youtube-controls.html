@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<style type="text/css">
+
+body {
+	margin: 3em 30em;
+	font-family: "lucida grande", arial, sans-serif;
+	font-size: 12px;
+}
+h1, h2, h3, h4, h5, h6 {
+	font-weight: lighter;
+}
+h1 { color: #006699; }
+h2 { border-bottom: 1px solid #c6c6c6; }
+p { padding: .5em 0; margin: 0; }
+.yt-hover {
+	padding: 2px 4px;
+	border: 1px solid transparent;
+}
+.yt-button-inset,
+.yt-button {
+	padding: 4px 6px;
+}
+.yt-button-inset,
+.yt-button,
+.yt-hover:hover {
+	cursor: pointer;
+	background: #fafafa;
+	background: -moz-linear-gradient( top, rgb(255,255,255), rgb(235,235,235) );
+	background: -webkit-gradient(linear, left top, left bottom, from(rgb(255,255,255)), to(rgb(235,235,235)) );
+	border: 1px solid #cccccc;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+}
+.yt-hover:hover,
+.yt-button:hover {
+	-moz-box-shadow: 0 0 3px #666666;
+	-webkit-box-shadow: 0 0 3px #666666;
+	border-color: #999999;
+}
+.yt-button:active {
+	background: -moz-linear-gradient( top, rgb(235,235,235), rgb(255,255,255) );
+	background: -webkit-gradient(linear, left top, left bottom, from(rgb(235,235,235)), to(rgb(255,255,255)) );
+}
+.yt-button-inset:hover {
+	-moz-box-shadow: inset 0 0 6px #cccccc;
+	-webkit-box-shadow: inset 0 0 6px #cccccc;
+	border-color: #aaaaaa;
+}
+.yt-button-left {
+	-moz-border-radius: 3px 0 0 3px;
+	-webkit-border-radius: 3px 0 0 3px;
+}
+.yt-button-right {
+	-moz-border-radius: 0 3px 3px 0;
+	-webkit-border-radius: 0 3px 3px 0;
+}
+.yt-button-middle {
+	-moz-border-radius: 0;
+	-webkit-border-radius: 0;
+	border-left-width: 0;
+	border-right-width: 0;
+}
+.yt-tooltip-tip {
+	color: #ffffff;
+	padding: 4px 6px;
+	position: relative;
+	left: -50%;
+	background: rgba(0, 0, 0, 0.85);
+	border: 1px solid #cccccc;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-moz-box-shadow: 0 0 5px #666666;
+	-webkit-box-shadow: 0 0 5px #666666;
+}
+.yt-tooltip {position: relative;}
+.yt-tooltip .tooltip-arrow {
+	border: 5px solid transparent;
+	width: 0;
+	height: 0;
+	position: absolute;
+	left: -5px;
+}
+
+/* tooltip content positioning */
+.tooltip-position-top .yt-tooltip-tip { left: -50%;}
+.tooltip-position-bottom .yt-tooltip-tip { left: -50%;}
+.tooltip-position-left .yt-tooltip-tip { left: -100%;}
+.tooltip-position-right .yt-tooltip-tip { left: 0;}
+
+/* tooltip arrow positioning */
+.tooltip-position-top .tooltip-arrow { border-top-color: rgba(0, 0, 0, 0.85); bottom: -9px; }
+.tooltip-position-bottom .tooltip-arrow { border-bottom-color: rgba(0, 0, 0, 0.85); top: -9px; }
+.tooltip-position-left .yt-tooltip-tip { left: 0; }
+.tooltip-position-left .tooltip-arrow { border-left-color: rgba(0, 0, 0, 0.85); left: auto; right: -9px; top: 35%; bottom: 35%; }
+.tooltip-position-right .tooltip-arrow { border-right-color: rgba(0, 0, 0, 0.85); left: -9px; top: 25%; }
+
+</style>
+</head>
+<body>
+<h1>Youtube controls</h1>
+<h2>hover link</h2>
+<p><a class="yt-hover" href="#">hover effect</a></p>
+
+<h2>html &lt;button&gt;</h2>
+<p><button class="yt-button yt-button-tooltip" title="a button's tooltip" style="padding:4px 6px;">a button</button></p>
+
+<h2>toolbar buttons</h2>
+<p><button class="yt-button yt-button-left">Button</button><button class="yt-button yt-button-middle">Button</button><button class="yt-button yt-button-right">Button</button></p>
+
+<h2>tooltip buttons</h2>
+<p>
+	<button class="yt-button yt-button-tooltip yt-tooltip-bottom" title="tooltip text, bottom">Tooltip bottom</button>
+	<button class="yt-button yt-button-tooltip yt-tooltip-top" title="tooltip text, top">Tooltip top</button>
+	<button class="yt-button yt-button-tooltip yt-tooltip-left" title="tooltip text, left">Tooltip left</button>
+	<button class="yt-button yt-button-tooltip yt-tooltip-right" title="tooltip text, right">Tooltip right</button>
+</p>
+
+<h2>inset buttons</h2>
+<p>
+	<button class="yt-button-inset" type="button">inset style button</button>
+</p>
+
+<div style="display:none;" id="tooltip" class="yt-tooltip">
+	<div class="yt-tooltip-tip"><div class="content"></div></div>
+</div>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="jquery-plugins/jquery.title-tooltip.js"></script>
+<script type="text/javascript">
+	$('.yt-button-tooltip').tooltip();
+</script>
+
+</body>
+</html>

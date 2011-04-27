@@ -3,7 +3,7 @@
 /**
  *
  * vnstat web script
- * by glaszig@gmail.com
+ * Copyright (c) glaszig@gmail.com
  *
  *
  * USAGE
@@ -20,14 +20,12 @@
  *
  * CONFIGURATION
  *
- * INTERFACES => space-seperated list of configured interfaces
  * COMMANDS   => space-seperated list of available commands
  * USE_CACHE  => instructs vnstati to use built-in caching functionallity
  * CACHE_TIME => time to cache an image in minutes
  * CACHE_DIR  => directory to store the cached files (defaults to /tmp)
  *
  */
-define('INTERFACES', 'ng0 fxp1 ath0');
 define('COMMANDS', 's d m hs vs t h');
 define('USE_CACHE', true);
 define('CACHE_TIME', 5);
@@ -38,9 +36,6 @@ define('CACHE_TIME', 5);
 
 
 // sanity checks
-if(!in_array($_GET['i'], explode(' ', INTERFACES)))
-    die('invalid interface.');
-
 if(!in_array($_GET['c'], explode(' ', COMMANDS)))
     die('invalid command.');
 
@@ -58,13 +53,22 @@ if(constant('USE_CACHE')):
 endif;
 
 // do the math
-$output = shell_exec('/usr/local/bin/vnstati -nh -ne -c '.intval(CACHE_TIME).' -'.$_GET['c'].' -o '.$outfile.' -i '.$_GET['i']);
+#$output = shell_exec('/usr/local/bin/vnstati -nh -ne -c '.intval(CACHE_TIME).' -'.$_GET['c'].' -o '.$outfile.' -i '.$_GET['i']);
+exec('/usr/local/bin/vnstati -nh -ne -c '.intval(CACHE_TIME).' -'.$_GET['c'].' -o '.$outfile.' -i '.$_GET['i'], $output, $status);
 
-// put image through
-header('Content-Type: image/png');
-header('Content-Disposition: inline; filename=vnstat-'.$_GET['i'].'.png');
-if(USE_CACHE)
-    readfile($outfile);
-else
-    echo $output;
+if($status == 0) {
+	// put image through
+	header('Content-Type: image/png');
+	header('Content-Disposition: inline; filename=vnstat-'.$_GET['i'].'.png');
+	if(USE_CACHE)
+	    readfile($outfile);
+	else
+	    echo $output;
+} else {
+	$output = join("\n", $output);
+	$output = trim($output);
+	echo "$output";
+}
+
+
 
