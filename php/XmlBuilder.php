@@ -11,6 +11,8 @@
  *  $xml->foo->bla = 'blubb';
  *  $xml->foo->bla['title'] = 'empty';
  *  echo $xml;
+ *  unset($xml->foo->bar);
+ *  echo $xml;
  * }}}
  *
  * @author glaszig at gmail dot com
@@ -31,6 +33,14 @@ class XmlBuilderElement implements ArrayAccess {
     
     public function __set($name, $value) {
         return $this->child($name)->value($value);
+    }
+
+    public function __isset($name) {
+        return isset($this->children[$name]);
+    }
+
+    public function __unset($name) {
+        return unset($this->children[$name]);
     }
     
     public function child($name) {
