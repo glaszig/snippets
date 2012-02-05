@@ -1,10 +1,21 @@
+/**
+ * periodical image updater plugin
+ *
+ * To reload an image every 10 seconds:
+ *
+ * $('img.updatable').updatable({period:10});
+ *
+ * For more options have a look at the config hash.
+ *
+ * Copyright (c) http://github.com/glaszig
+ */
 (function($) {
 
 	$.fn.updatable = function(config) {
 	
-		config = $.extend({
+		var config = $.extend({
 			debug: false,
-			period: 3000,
+			period: 30,
 			queryKey: '_jq-update',
 			queryValue: function() {
 				return new Date().getTime();
@@ -24,22 +35,37 @@
 			}
 		}
 		
+		var parseQueryString = function(str) {
+		  var obj = {};
+		  if (str.length) {
+		    $.each(str.split('&'), function(k, v) {
+		      var p = v.split('=');
+		      obj[p[0]] = p[1] || null;
+		    });
+		  }
+		  return obj;
+		}
+		
+		var makeQueryString = function(obj) {
+		  var str = [];
+		  $.each(obj, function(k, v) {
+		    str.push(v == null ? k : k+'='+v);
+		  });
+		  return str.join('&');
+		}
+		
 		var periodicalUpdater = function(imgElement, period) {
-			var myself = arguments.callee;
-			setTimeout(function() {
+			setInterval(function() {
 				config.onBeforeLoad.call(imgElement);
 				// todo: update image src url
 				log('old src: '+imgElement.attr('src'));
 				var oldSrc = imgElement.attr('src').split('?');
-				var qs = oldSrc[1] || ''; //config.queryKey+'=now';
-				// clean up
-				qs = qs.replace(new RegExp(config.queryKey+'=[^&]*&?', 'ig'), '')+'&';
+				var qs = parseQueryString(oldSrc[1] || '');
+				qs[config.queryKey] = config.queryValue();
 				// set src to initiate reload
-				imgElement.attr('src', oldSrc[0]+'?'+qs+config.queryKey+'='+config.queryValue());
+				imgElement.attr('src', oldSrc[0]+'?'+makeQueryString(qs));
 				log('new src: '+imgElement.attr('src'));
-				// repeating...
-				myself.call(myself, imgElement, period);
-			}, period);
+			}, period*1000);
 		};
 		
 		return this.each(function() {
@@ -47,24 +73,15 @@
 			var img = $(this);
 			
 			img.load(function() {
-				config.onAfterLoad.call($(this));
+				config.onAfterLoad.call(this);
 			});
 			
 			// update periodical
 			if(config.period) {
-				periodicalUpdater(img, config.period*1000);
+				periodicalUpdater(img, config.period);
 			}
 			
 		});
 	};
 
 })(jQuery);
-/**
- * usage example
- */
-/*
-$('img').updatable({
-	debug: true,
-	period:3000
-});
-*/
