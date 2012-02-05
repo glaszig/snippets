@@ -6,7 +6,19 @@
  * by default, this function exits 
  * after setting the header.
  * if you like your script to be
- * continued, use the second parameter
+ * continued, use the second parameter.
+ *
+ * Usage:
+ *
+ * // relative to http://example.com/path/index.html
+ * http_redirect('?foo=bar'); // => http://example.com/path/index.html?foo=bar
+ * http_redirect('another/file.html'); // => http://example.com/path/another/file.html
+ *
+ * // absolute to http://example.com/path/to/index.html
+ * http_redirect('/another/file.html'); // => http://example.com/another/file.html
+ *
+ * // relative to the schema while on https://example.com
+ * http_redirect('//another.domain.com/foo/bar.html'); // => https://another.domain.com/foo/bar.html
  * 
  * @param string $uri an absolute, relative of complete url
  * @param boolean $exit (optional) whether to redirect immediatly.
@@ -18,7 +30,7 @@
  */
 function http_redirect($uri, $exit = true, $debug = false) {
 
-	$template = "{:protocol}://{:host}{:port}/{:path}{:query}";
+	$template = "{:schema}://{:host}{:port}/{:path}{:query}";
 
 	$uri = trim($uri);
 	$path = $_SERVER['SCRIPT_NAME'];
@@ -34,11 +46,15 @@ function http_redirect($uri, $exit = true, $debug = false) {
 	if($uri{0} == '?') {
 		$query = substr($uri, 1); // the query string without its first character
 	}
-	// handle http(s)/ftp redirects
+	// handle http(s) redirects
 	// that is external redirects
-	elseif(preg_match('~^(https?|ftp)://~i', $uri)) {
+	elseif(preg_match('~^https?://~i', $uri)) {
 		$template = $uri;
-	} 
+	}
+	// handle schema-relative redirects
+	elseif(preg_match('~^//~', $uri)) {
+	    $template = "{:schema}:{$uri}";
+	}
 	// handle file redirects with options query string
 	else {
 		list($path, $query) = explode('?', $uri);
@@ -50,7 +66,7 @@ function http_redirect($uri, $exit = true, $debug = false) {
 	}
 	
 	$data = array(
-		'protocol' => 'http'.($_SERVER['HTTPS']=='on'?'s':''),
+		'schema' => 'http'.($_SERVER['HTTPS']=='on'?'s':''),
 		'host' => $_SERVER['HTTP_HOST'],
 		'port' => $_SERVER['SERVER_PORT'] != 80 ? ":{$_SERVER['SERVER_PORT']}" : '',
 		'path' => ltrim($path, '/'),
