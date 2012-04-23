@@ -13,17 +13,25 @@
  *  echo $xml;
  *  unset($xml->foo->bar);
  *  echo $xml;
+ *
+ *  $xml->foo->doe[0] = 'john';
+ *  $xml->foo->doe[1] = 'jane';
+ *  echo $xml;
  * }}}
  *
  * @author glaszig at gmail dot com
  */
 class XmlBuilderElement implements ArrayAccess {
     
+    protected $name = '';
     protected $element = null;
     protected $attributes = array();
+    protected $parent = null;
     protected $children = array();
     
-    public function __construct($name) {
+    public function __construct($name, $parent) {
+        $this->parent = $parent;
+        $this->name = $name;
         $this->element = new DOMElement($name);
     }
     
@@ -36,7 +44,7 @@ class XmlBuilderElement implements ArrayAccess {
     }
 
     public function __isset($name) {
-        return isset($this->children[$name]);
+        return isset($this->children[$name]) && isset($this->children[$name][0]);
     }
 
     public function __unset($name) {
@@ -46,10 +54,10 @@ class XmlBuilderElement implements ArrayAccess {
         }
     }
     
-    public function child($name) {
-        if (!isset($this->children[$name]))
-            $this->children[$name] = new XmlBuilderElement($name);
-        return $this->children[$name];
+    public function child($name, $index = 0) {
+        if (!isset($this->children[$name][$index]))
+            $this->children[$name][$index] = new XmlBuilderElement($name, $this);
+        return $this->children[$name][$index];
     }
     
     protected function value() {
@@ -65,15 +73,30 @@ class XmlBuilderElement implements ArrayAccess {
     }
     
     public function offsetGet($offset) {
+        if(is_int($offset)) {
+            return $this->parent->child($this->name, $offset);
+        }
         return $this->attributes[$offset];
     }
         
     public function offsetSet($offset, $value) {
-        $this->attributes[$offset] = $value;
+        if(is_int($offset)) {
+            $this->parent->child($this->name, $offset)->value($value);
+        }
+        else {
+            $this->attributes[$offset] = $value;
+        }
     }
         
     public function offsetUnset($offset) {
-        unset($this->attributes[$offset]);
+        if(is_int($offset)) {
+            unset($this->parent->children[$this->name][$offset]);
+            $node = $this->parent->element->getElementsByTagName($this->name)->item($offset);
+            if($node) $this->parent->element->removeChild($node);
+        }
+        else {
+            unset($this->attributes[$offset]);
+        }
     }
     
     public function &element() {
@@ -88,9 +111,11 @@ class XmlBuilderElement implements ArrayAccess {
     }
     
     protected function build($dom = null) {
-        foreach ($this->children as $child) {
-            $node = $dom->appendChild($child->element());
-            $child->build($node);
+        foreach ($this->children as $siblings) {
+            foreach($siblings as $child) {
+                $node = $dom->appendChild($child->element());
+                $child->build($node);
+            }
         }
         foreach ($this->attributes as $name => $value) {
             $this->element->setAttribute($name, $value);
