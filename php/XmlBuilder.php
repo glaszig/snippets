@@ -36,7 +36,7 @@ class XmlBuilderElement implements ArrayAccess {
     }
 
     public function __isset($name) {
-        return isset($this->children[$name]);
+        return isset($this->children[$name]) && isset($this->children[$name][0]);
     }
 
     public function __unset($name) {
@@ -46,10 +46,10 @@ class XmlBuilderElement implements ArrayAccess {
         }
     }
     
-    public function child($name) {
-        if (!isset($this->children[$name]))
-            $this->children[$name] = new XmlBuilderElement($name);
-        return $this->children[$name];
+    public function child($name, $index = 0) {
+        if (!isset($this->children[$name][$index]))
+            $this->children[$name][$index] = new XmlBuilderElement($name);
+        return $this->children[$name][$index];
     }
     
     protected function value() {
@@ -88,9 +88,11 @@ class XmlBuilderElement implements ArrayAccess {
     }
     
     protected function build($dom = null) {
-        foreach ($this->children as $child) {
-            $node = $dom->appendChild($child->element());
-            $child->build($node);
+        foreach ($this->children as $name => $children) {
+            foreach($children as $child) {
+                $node = $dom->appendChild($child->element());
+                $child->build($node);
+            }
         }
         foreach ($this->attributes as $name => $value) {
             $this->element->setAttribute($name, $value);
