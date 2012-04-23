@@ -56,7 +56,7 @@ class XmlBuilderElement implements ArrayAccess {
     
     public function child($name, $index = 0) {
         if (!isset($this->children[$name][$index]))
-            $this->children[$name][$index] = new XmlBuilderElement($name, $this);
+            $this->children[$name][$index] = new self($name, $this);
         return $this->children[$name][$index];
     }
     
