@@ -40,7 +40,10 @@ class XmlBuilderElement implements ArrayAccess {
     }
 
     public function __unset($name) {
-        return unset($this->children[$name]);
+        unset($this->children[$name]);
+        foreach($this->element->getElementsByTagName($name) as $node) {
+            $this->element->removeChild($node);
+        }
     }
     
     public function child($name) {
