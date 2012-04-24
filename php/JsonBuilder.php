@@ -48,10 +48,10 @@ class JsonBuilder implements ArrayAccess {
         return $this->struct[$name];
     }
 
-    public function toJson() {
+    public function toJson($options = 0) {
         $struct = null;
         $this->build($struct);
-        return json_encode($struct);
+        return json_encode($struct, $options);
     }
 
     public function build(&$struct) {
